@@ -217,4 +217,19 @@ describe('Automation Exercise Test Suite', () => {
         cy.get('.product-information p').contains('Condition: New').should('be.visible');
         cy.get('.product-information p').contains('Brand: Polo').should('be.visible');
     });
+
+    it('search product', () => {
+        cy.visit('https://automationexercise.com');
+        cy.get(homePage).should('be.visible');
+
+        cy.get('a[href="/products"]').click();
+        cy.contains('All Products').should('be.visible');
+        cy.get('#search_product').type('Blue Top');
+        cy.get('#submit_search').click();
+        cy.contains('Searched Products').should('be.visible');
+        cy.get('.features_items').should('be.visible');
+        cy.get('.features_items .productinfo').each(($el) => {
+            cy.wrap($el).should('be.visible');
+        });
+    });
 });

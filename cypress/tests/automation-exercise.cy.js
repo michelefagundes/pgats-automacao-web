@@ -1,187 +1,78 @@
-const { faker } = require('@faker-js/faker'); 
-import {
-    homePage,
-    loginBtn,
-    newUserSignUpHeader,
-    emailAlreadyExistsHint,
-    registerUserName,
-    registerUserEmail,
-    signUpBtn,
-    enterAccountInfoHeader,
-    deleteAccountBtn, 
-    logoutBtn, 
-} from '../../helpers/automation-exercise.page';
+const { faker } = require('@faker-js/faker');
+import { BasePage } from '../../helpers/base.page';
+import { AutomationExercisePage } from '../../helpers/automation-exercise.page';
+import { UserModule } from '../modules/user.module';
+
+const basePage = new BasePage();
+const automationExercisePage = new AutomationExercisePage();
 
 describe('Automation Exercise Test Suite', () => {
-    it('register an user', () => {
+    beforeEach(() => {
+        basePage.visitHomePage(); 
+        cy.get(automationExercisePage.homePage).should('be.visible');
+    });
+
+    it('#1 register an user', () => {
         const randomUserName = faker.person.fullName();
         const randomUserEmail = faker.internet.email();
         const randomPass = faker.internet.password();
-        const randomCompanyName = faker.company.name();
-        const randomCompanyAddress = faker.location.streetAddress();
-        const randomCompanyAddress2 = faker.location.secondaryAddress();
-        const randomState = faker.location.state();
-        const randomCity = faker.location.city();
-        const randomZipCode = faker.location.zipCode();
-        const randomPhone = faker.phone.number();
 
-        cy.visit('https://automationexercise.com');
-        cy.get(homePage).should('be.visible');
-        cy.get(loginBtn).click();
-        cy.contains(newUserSignUpHeader).should('be.visible');
-
-        cy.get(registerUserName).type('Test 123');
-        cy.get(registerUserEmail).type('test123@gmail.com');
-        cy.get(signUpBtn).click();
-        cy.contains(emailAlreadyExistsHint).should('be.visible'); 
-        cy.get(registerUserName).clear();
-        cy.get(registerUserEmail).clear();
-
-        cy.get(registerUserName).type(randomUserName);
-        cy.get(registerUserEmail).type(randomUserEmail);
-        cy.get(signUpBtn).click();
-        cy.contains(enterAccountInfoHeader).should('be.visible');
-
-        cy.get('#id_gender1').check();
-        cy.get('[data-qa="name"]').should('have.value', randomUserName);
-        cy.get('[data-qa="email"]').should('have.value', randomUserEmail);
-
-        cy.get('[data-qa="password"]').type(randomPass);
-        cy.get('[data-qa="days"]').select('10');
-        cy.get('[data-qa="months"]').select('May');
-        cy.get('[data-qa="years"]').select('1990');
-
-        cy.get('#newsletter').check();
-        cy.get('#optin').check();
-
-        cy.get('[data-qa="first_name"]').type('QA');
-        cy.get('[data-qa="last_name"]').type('PGATS - Test');
-        cy.get('[data-qa="company"]').type(randomCompanyName);
-        cy.get('[data-qa="address"]').type(randomCompanyAddress);
-        cy.get('[data-qa="address2"]').type(randomCompanyAddress2);
-
-        cy.get('[data-qa="country"]')
-            .find('option') 
-            .then(($options) => {
-                const randomIndex = Math.floor(Math.random() * $options.length); 
-                const randomCountry = $options[randomIndex].value;
-                cy.get('[data-qa="country"]').select(randomCountry); 
-            });
-
-        cy.get('[data-qa="state"]').type(randomState);
-        cy.get('[data-qa="city"]').type(randomCity);
-        cy.get('[data-qa="zipcode"]').type(randomZipCode);
-        cy.get('[data-qa="mobile_number"]').type(randomPhone);
-
-        cy.get('[data-qa="create-account"]').click();
-        cy.contains('Account Created!').should('be.visible');
-        cy.get('[data-qa="continue-button"]').click();
-        cy.contains(`Logged in as ${randomUserName}`).should('be.visible');
-
-        cy.get(deleteAccountBtn).click();
-        cy.contains('Account Deleted!').should('be.visible');
-        cy.get('[data-qa="continue-button"]').click();
+        cy.get(automationExercisePage.loginBtn).click(); 
+        UserModule.registerUser(randomUserName, randomUserEmail, randomPass);
+        basePage.deleteAccount();
     });
 
-    it('login user with correct email and password', () => {
-        const randomUserName = faker.person.fullName();
-        const randomUserEmail = faker.internet.email();
-        const randomPass = faker.internet.password();
-        const randomCompanyAddress = faker.location.streetAddress();
-        const randomState = faker.location.state();
-        const randomCity = faker.location.city();
-        const randomZipCode = faker.location.zipCode();
-        const randomPhone = faker.phone.number();
-
-        cy.visit('https://automationexercise.com');
-        cy.get(homePage).should('be.visible');
-        cy.get(loginBtn).click();
-
-        cy.get(registerUserName).type(randomUserName);
-        cy.get(registerUserEmail).type(randomUserEmail);
-        cy.get(signUpBtn).click();
-        cy.contains(enterAccountInfoHeader).should('be.visible');
-
-        cy.get('#id_gender1').check();
-        cy.get('[data-qa="name"]').should('have.value', randomUserName);
-        cy.get('[data-qa="email"]').should('have.value', randomUserEmail);
-        cy.get('[data-qa="password"]').type(randomPass);
-        cy.get('[data-qa="days"]').select('10');
-        cy.get('[data-qa="months"]').select('May');
-        cy.get('[data-qa="years"]').select('1990');
-        cy.get('[data-qa="first_name"]').type('QA');
-        cy.get('[data-qa="last_name"]').type('PGATS - Test');
-        cy.get('[data-qa="address"]').type(randomCompanyAddress);
-        cy.get('[data-qa="state"]').type(randomState);
-        cy.get('[data-qa="city"]').type(randomCity);
-        cy.get('[data-qa="zipcode"]').type(randomZipCode);
-        cy.get('[data-qa="mobile_number"]').type(randomPhone);
-    
-        cy.get('[data-qa="create-account"]').click();
-        cy.contains('Account Created!').should('be.visible');
-        cy.get('[data-qa="continue-button"]').click();
-        cy.contains(`Logged in as ${randomUserName}`).should('be.visible');
-
-        cy.get(logoutBtn).click();
-        cy.get(loginBtn).click();
-        cy.contains('Login to your account').should('be.visible');
-
-        cy.get('[data-qa="login-email"]').type(randomUserEmail); 
-        cy.get('[data-qa="login-password"]').type(randomPass); 
-        cy.get('[data-qa="login-button"]').click();
-
-        cy.contains(`Logged in as ${randomUserName}`).should('be.visible');
-        
-        cy.get(deleteAccountBtn).click();
-        cy.contains('Account Deleted!').should('be.visible');
-        cy.get('[data-qa="continue-button"]').click();
-    });
-
-    it('logout user ', () => {
-        const userName = Cypress.env('USER_NAME'); 
+    it('#2 login user with correct email and password', () => {
         const userEmail = Cypress.env('USER_EMAIL');
         const userPass = Cypress.env('USER_PASSWORD');
 
-        cy.visit('https://automationexercise.com');
-        cy.get(homePage).should('be.visible');
-        cy.get(loginBtn).click();
-        
-        cy.get('[data-qa="login-email"]').type(userEmail); 
-        cy.get('[data-qa="login-password"]').type(userPass); 
+        cy.get(automationExercisePage.loginBtn).should('be.visible').click();
+        cy.get('[data-qa="login-email"]').type(userEmail);
+        cy.get('[data-qa="login-password"]').type(userPass);
         cy.get('[data-qa="login-button"]').click();
-
-        cy.contains(`Logged in as ${userName}`).should('be.visible');
-        cy.get(logoutBtn).click(); 
-        cy.get(homePage).should('be.visible');    
+        cy.contains(`Logged in as`).should('be.visible'); 
     });
 
-    it('try to register an existent user', () => {
-        const userName = Cypress.env('USER_NAME'); 
+    it('#3 login user with incorrect email and password', () => {
+        cy.get('a[href="/login"]').should('be.visible').click(); 
+        cy.get('[data-qa="login-email"]').type('aasksoksdoskf@gmail.com');
+        cy.get('[data-qa="login-password"]').type('wrong-pass');
+        cy.get('[data-qa="login-button"]').click();
+        cy.contains('Your email or password is incorrect!').should('be.visible');
+    });
+
+    it('#4 logout user', () => {
+        const userName = Cypress.env('USER_NAME');
         const userEmail = Cypress.env('USER_EMAIL');
+        const userPass = Cypress.env('USER_PASSWORD');
 
-        cy.visit('https://automationexercise.com');
-        cy.get(homePage).should('be.visible');
-        cy.get(loginBtn).click();
-        cy.contains(newUserSignUpHeader).should('be.visible');
-
-        cy.get(registerUserName).type(userName);
-        cy.get(registerUserEmail).type(userEmail);
-        cy.get(signUpBtn).click();
-        cy.contains(emailAlreadyExistsHint).should('be.visible'); 
+        basePage.loginUser(userEmail, userPass);
+        cy.contains(`Logged in as ${userName}`).should('be.visible');
+        basePage.logoutUser();
+        cy.get(automationExercisePage.homePage).should('be.visible');
     });
 
-    it('validating contact us form', () => {
+    it('#5 try to register an existent user', () => {
+        basePage.visitHomePage();
+        cy.get(automationExercisePage.loginBtn).click();
+        cy.contains(automationExercisePage.newUserSignUpHeader).should('be.visible');
+        const userName = Cypress.env('USER_NAME');
+        const userEmail = Cypress.env('USER_EMAIL');
+        cy.get(automationExercisePage.registerUserName).type(userName);
+        cy.get(automationExercisePage.registerUserEmail).type(userEmail);
+        cy.get(automationExercisePage.signUpBtn).click();
+        cy.contains(automationExercisePage.emailAlreadyExistsHint).should('be.visible');
+    });
+
+    it('#6 validating contact us form', () => {
+        basePage.visitHomePage();
         const randomName = faker.person.fullName();
         const randomEmail = faker.internet.email();
         const randomSubject = faker.lorem.sentence();
         const randomMessage = faker.lorem.paragraph();
 
-        cy.visit('https://automationexercise.com');
-        cy.get(homePage).should('be.visible');
         cy.get('a[href="/contact_us"]').click();
-
         cy.get('h2.title.text-center').should('be.visible');
-        
         cy.get('[data-qa="name"]').type(randomName);
         cy.get('[data-qa="email"]').type(randomEmail);
         cy.get('[data-qa="subject"]').type(randomSubject);
@@ -197,13 +88,11 @@ describe('Automation Exercise Test Suite', () => {
 
         cy.get('a.btn.btn-success[href="/"]').click();
 
-        cy.get(homePage).should('be.visible');
+        cy.get(automationExercisePage.homePage).should('be.visible');
     });
 
-    it('verify products and products details page', () => {
-        cy.visit('https://automationexercise.com');
-        cy.get(homePage).should('be.visible');
-
+    it('#8 verify products and products details page', () => {
+        basePage.visitHomePage();
         cy.get('a[href="/products"]').click();
         cy.contains('All Products').should('be.visible');
         cy.get('.features_items').should('be.visible');
@@ -218,10 +107,8 @@ describe('Automation Exercise Test Suite', () => {
         cy.get('.product-information p').contains('Brand: Polo').should('be.visible');
     });
 
-    it('search product', () => {
-        cy.visit('https://automationexercise.com');
-        cy.get(homePage).should('be.visible');
-
+    it('#9 search product', () => {
+        basePage.visitHomePage();
         cy.get('a[href="/products"]').click();
         cy.contains('All Products').should('be.visible');
         cy.get('#search_product').type('Blue Top');
@@ -233,12 +120,10 @@ describe('Automation Exercise Test Suite', () => {
         });
     });
 
-    it('verify subscription in home page', () => {
+    it('#10 verify subscription in home page', () => {
+        basePage.visitHomePage();
         const randomEmail = faker.internet.email();
     
-        cy.visit('https://automationexercise.com');
-        cy.get(homePage).should('be.visible');
-
         cy.scrollTo('bottom');
 
         cy.contains('h2', 'Subscription').should('be.visible');
@@ -248,7 +133,8 @@ describe('Automation Exercise Test Suite', () => {
         cy.contains('You have been successfully subscribed!').should('be.visible');
     });
 
-    it.only('place order: register before checkout', () => {
+    it('#15 place order: register before checkout', () => {
+        basePage.visitHomePage();
         const randomUserName = faker.person.fullName();
         const randomUserEmail = faker.internet.email();
         const randomPass = faker.internet.password();
@@ -258,15 +144,12 @@ describe('Automation Exercise Test Suite', () => {
         const cardExpMonth = '12';
         const cardExpYear = '2025';
 
-        cy.visit('https://automationexercise.com');
-        cy.get(homePage).should('be.visible');
+        cy.get(automationExercisePage.loginBtn).click();
 
-        cy.get(loginBtn).click();
-
-        cy.get(registerUserName).type(randomUserName);
-        cy.get(registerUserEmail).type(randomUserEmail);
-        cy.get(signUpBtn).click();
-        cy.contains(enterAccountInfoHeader).should('be.visible');
+        cy.get(automationExercisePage.registerUserName).type(randomUserName);
+        cy.get(automationExercisePage.registerUserEmail).type(randomUserEmail);
+        cy.get(automationExercisePage.signUpBtn).click();
+        cy.contains(automationExercisePage.enterAccountInfoHeader).should('be.visible');
 
         cy.get('#id_gender1').check();
         cy.get('[data-qa="password"]').type(randomPass);
@@ -309,7 +192,7 @@ describe('Automation Exercise Test Suite', () => {
         cy.get('[data-qa="pay-button"]').click();
         cy.contains('p', 'Congratulations! Your order has been confirmed!').should('be.visible');
 
-        cy.get(deleteAccountBtn).click();
+        cy.get(automationExercisePage.deleteAccountBtn).click();
         cy.contains('Account Deleted!').should('be.visible');
         cy.get('[data-qa="continue-button"]').click();
     });

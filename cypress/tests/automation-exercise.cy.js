@@ -247,4 +247,70 @@ describe('Automation Exercise Test Suite', () => {
         cy.get('#subscribe').click();
         cy.contains('You have been successfully subscribed!').should('be.visible');
     });
+
+    it.only('place order: register before checkout', () => {
+        const randomUserName = faker.person.fullName();
+        const randomUserEmail = faker.internet.email();
+        const randomPass = faker.internet.password();
+        const cardName = faker.person.fullName();
+        const cardNumber = faker.finance.creditCardNumber();
+        const cardCVC = faker.finance.creditCardCVV();
+        const cardExpMonth = '12';
+        const cardExpYear = '2025';
+
+        cy.visit('https://automationexercise.com');
+        cy.get(homePage).should('be.visible');
+
+        cy.get(loginBtn).click();
+
+        cy.get(registerUserName).type(randomUserName);
+        cy.get(registerUserEmail).type(randomUserEmail);
+        cy.get(signUpBtn).click();
+        cy.contains(enterAccountInfoHeader).should('be.visible');
+
+        cy.get('#id_gender1').check();
+        cy.get('[data-qa="password"]').type(randomPass);
+        cy.get('[data-qa="days"]').select('10');
+        cy.get('[data-qa="months"]').select('May');
+        cy.get('[data-qa="years"]').select('1990');
+        cy.get('[data-qa="first_name"]').type('QA');
+        cy.get('[data-qa="last_name"]').type('PGATS - Test');
+        cy.get('[data-qa="address"]').type(faker.location.streetAddress());
+        cy.get('[data-qa="state"]').type(faker.location.state());
+        cy.get('[data-qa="city"]').type(faker.location.city());
+        cy.get('[data-qa="zipcode"]').type(faker.location.zipCode());
+        cy.get('[data-qa="mobile_number"]').type(faker.phone.number());
+        cy.get('[data-qa="create-account"]').click();
+
+        cy.contains('Account Created!').should('be.visible');
+        cy.get('[data-qa="continue-button"]').click();
+
+        cy.contains(`Logged in as ${randomUserName}`).should('be.visible');
+
+        cy.get('a[href="/products"]').click();
+        cy.get('a[href="/product_details/1"]').click();
+        cy.get('.product-information .btn.btn-default.cart').click();
+        cy.get('p.text-center a[href="/view_cart"]').click();
+
+        cy.contains('Shopping Cart').should('be.visible');
+        cy.get('.btn.btn-default.check_out').click();
+        cy.contains('Address Details').should('be.visible');
+        cy.contains('Review Your Order').should('be.visible');
+
+        cy.get('textarea[name="message"]').type('Please deliver between 9 AM and 5 PM.');
+        cy.get('a[href="/payment"]').click();
+
+        cy.get('[data-qa="name-on-card"]').type(cardName);
+        cy.get('[data-qa="card-number"]').type(cardNumber);
+        cy.get('[data-qa="cvc"]').type(cardCVC);
+        cy.get('[data-qa="expiry-month"]').type(cardExpMonth);
+        cy.get('[data-qa="expiry-year"]').type(cardExpYear);
+
+        cy.get('[data-qa="pay-button"]').click();
+        cy.contains('p', 'Congratulations! Your order has been confirmed!').should('be.visible');
+
+        cy.get(deleteAccountBtn).click();
+        cy.contains('Account Deleted!').should('be.visible');
+        cy.get('[data-qa="continue-button"]').click();
+    });
 });

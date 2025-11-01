@@ -1,0 +1,29 @@
+{
+  "name": "automacao-testes-web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cypress run && npm run allure:generate",
+    "allure:clean": "rm -rf allure-results allure-report",
+    "allure:generate": "npm run allure:clean && allure generate allure-results --clean",
+    "allure:open": "allure open allure-report"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@cypress/webpack-preprocessor": "^7.0.1",
+    "@faker-js/faker": "^10.1.0",
+    "@shelex/cypress-allure-plugin": "^2.41.2",
+    "cypress": "^12.17.1",
+    "cypress-file-upload": "^5.0.8",
+    "cypress-multi-reporters": "^2.0.5",
+    "mochawesome": "^7.1.4",
+    "mochawesome-merge": "^4.4.1",
+    "mochawesome-report-generator": "^6.3.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3"
+  }
+}

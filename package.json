@@ -1,29 +1,21 @@
 {
-  "name": "automacao-testes-web",
+  "name": "pgats-web-automation",
   "version": "1.0.0",
-  "description": "",
+  "description": "Automation tests for the Automation Exercise website",
   "main": "index.js",
   "scripts": {
-    "test": "cypress run && npm run allure:generate",
-    "allure:clean": "rm -rf allure-results allure-report",
-    "allure:generate": "npm run allure:clean && allure generate allure-results --clean",
-    "allure:open": "allure open allure-report"
+    "test": "npx cypress run"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["cypress", "automation", "testing"],
+  "author": "Michele F",
+  "license": "MIT",
   "devDependencies": {
-    "@cypress/webpack-preprocessor": "^7.0.1",
-    "@faker-js/faker": "^10.1.0",
-    "@shelex/cypress-allure-plugin": "^2.41.2",
-    "cypress": "^12.17.1",
-    "cypress-file-upload": "^5.0.8",
-    "cypress-multi-reporters": "^2.0.5",
-    "mochawesome": "^7.1.4",
-    "mochawesome-merge": "^4.4.1",
-    "mochawesome-report-generator": "^6.3.0"
-  },
-  "dependencies": {
-    "dotenv": "^17.2.3"
+    "cypress": "^12.0.0",
+    "cypress-multi-reporters": "^1.6.1",
+    "dotenv": "^16.0.0",
+    "mocha-junit-reporter": "^2.0.0",
+    "mochawesome": "^7.0.0",
+    "mochawesome-merge": "^4.2.0",
+    "mochawesome-report-generator": "^6.0.0"
   }
 }

@@ -1,4 +1,4 @@
-# pgats-automacao-web
+# pgats-web-automation
 
 This repository was created for the final project of my Web Automation class. The goal is to practice Cypress by automating test cases from the Automation Exercise website.
 
@@ -14,12 +14,12 @@ Before running the tests, ensure you have the following installed:
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/your-username/pgats-automacao-web.git
+   git clone https://github.com/michelefagundes/pgats-web-automation.git
    ```
 
 2. Navigate to the project directory:
    ```bash
-   cd pgats-automacao-web
+   cd pgats-web-automation
    ```
 
 3. Install the dependencies:
@@ -33,7 +33,7 @@ To execute the test suite, use one of the following commands:
 
 - Run tests in headless mode:
   ```bash
-  npx cypress run
+  npm test
   ```
 
 - Open the Cypress Test Runner:
@@ -47,7 +47,7 @@ This project is configured to generate JUnit test reports, which are useful for 
 
 1. **Run the tests:**
    ```bash
-   npx cypress run
+   npm test
    ```
 
 2. **Locate the reports:**
@@ -62,7 +62,7 @@ This project is configured to generate Mochawesome test reports, which provide d
 
 1. **Run the tests:**
    ```bash
-   npx cypress run
+   npm test
    ```
 
 2. **Locate the reports:**
@@ -71,7 +71,7 @@ This project is configured to generate Mochawesome test reports, which provide d
 3. **View the reports:**
    - Open the HTML report in your browser:
      ```bash
-     open cypress/reports/<report-name>.html
+     open cypress/reports/mochawesome/<report-name>.html
      ```
 
 4. **Use in CI/CD:**

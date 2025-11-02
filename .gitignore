@@ -9,7 +9,6 @@ cypress/screenshots/
 
 .cache/
 
-# Exclua relatórios antigos, mas mantenha os diretórios
 cypress/reports/mochawesome/*.json
 cypress/reports/mochawesome/*.html
 cypress/reports/junit/*.xml

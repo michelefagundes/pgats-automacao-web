@@ -1,8 +1,8 @@
-name: PGATS - Automação Web
+name: PGATS - Web Automation
 
 on:
   schedule:
-    - cron: '0 9 * * *' # Every day at 09:00 UTC
+    - cron: '0 9 * * *' # Runs every day at 09:00 UTC
   workflow_dispatch:
 
 jobs:
@@ -21,5 +21,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run PGATS - Automação Web
-        run: npx cypress run
+      - name: Run Cypress Tests
+        run: npm test
+
+      - name: Upload Mochawesome Reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: mochawesome-reports
+          path: cypress/reports/mochawesome/*.html
+
+      - name: Upload JUnit Reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: junit-reports
+          path: cypress/reports/junit/*.xml
